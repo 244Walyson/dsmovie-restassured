@@ -19,26 +19,26 @@ public class MovieControllerRA {
 
 	private String clientUsername, clientPassword, adminUsername, adminPassword, adminToken, clientToken, invalidToken;
 	private Long existingMovieId, nonExistingMovieId;
-	private Map<String, Object> postProductInstance;
+	private Map<String, Object> postMovieInstance;
 
 
 	@BeforeEach
 	void setUp() throws JSONException {
-		adminUsername = "alex@gmail.com";
-		adminPassword = "123456";
-		clientUsername = "maria@gmail.com";
-		clientPassword  = "123456";
+		clientUsername = "alex@gmail.com";
+		clientPassword = "123456";
+		adminUsername = "maria@gmail.com";
+		adminPassword  = "123456";
 		adminToken = TokenUtil.obtainAccessToken(adminUsername, adminPassword);
 		clientToken = TokenUtil.obtainAccessToken(clientUsername, clientPassword);
 		invalidToken = adminToken + "xpto";
 		existingMovieId = 1L;
 		nonExistingMovieId = 100L;
 
-		postProductInstance = new HashMap<>();
-		postProductInstance.put("title", "Test Movie");
-		postProductInstance.put("score", 0.0);
-		postProductInstance.put("count", 0);
-		postProductInstance.put("image", "https://www.themoviedb.org/t/p/w533_and_h300_bestv2/jBJWaqoSCiARWtfV0GlqHrcdidd.jpg");
+		postMovieInstance = new HashMap<>();
+		postMovieInstance.put("title", "Test Movie");
+		postMovieInstance.put("score", 0.0);
+		postMovieInstance.put("count", 0);
+		postMovieInstance.put("image", "https://www.themoviedb.org/t/p/w533_and_h300_bestv2/jBJWaqoSCiARWtfV0GlqHrcdidd.jpg");
 
 	}
 	@Test
@@ -92,15 +92,17 @@ public class MovieControllerRA {
 	@Test
 	public void insertShouldReturnUnprocessableEntityWhenAdminLoggedAndBlankTitle() throws JSONException {
 
-		JSONObject newProduct = new JSONObject(postProductInstance);
+		JSONObject newMovie = new JSONObject(postMovieInstance);
 
 
 		given()
 				.header("Content-type", "application/json")
 				.header("Authorization", "Bearer " + adminToken)
-				.body(newProduct)
+				.body(newMovie)
 				.contentType(ContentType.JSON)
 				.accept(ContentType.JSON)
+				.when()
+				.post("/movies")
 				.then()
 				.statusCode(201)
 				.body("id", is(30))
